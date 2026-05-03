@@ -155,11 +155,6 @@ Apache License 2.0 — See [LICENSE](LICENSE) for details.
 
 ## 👤 Author
 
-**Muhammed Sacid Ucak** — AI/NLP Engineer  
+**Muhammed Sacid Ucak** — AI Engineer  
 [GitHub](https://github.com/saciducak) • [LinkedIn](https://linkedin.com/in/saciducak)
 
----
-
-<div align="center">
-<i>Built with ❤️ for the Turkish AI community</i>
-</div>
