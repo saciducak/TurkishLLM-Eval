@@ -1,5 +1,5 @@
 """
-TurkishLLM-Eval Leaderboard — Premium Gradio UI
+TurkishLLM-Eval Leaderboard — Ultra Premium UI
 Port: 7847
 """
 
@@ -12,209 +12,175 @@ import plotly.graph_objects as go
 
 SAMPLE_DATA = Path(__file__).parent / "sample_results.json"
 PORT = 7847
-
 BENCHMARKS = ["truthfulqa_tr", "mmlu_tr", "hallucination_tr", "bias_tr"]
-BENCH_LABELS = {
-    "truthfulqa_tr": "🎯 TruthfulQA-TR",
-    "mmlu_tr": "📚 MMLU-TR",
-    "hallucination_tr": "🔍 Hallucination",
-    "bias_tr": "⚖️ Bias Detection",
+BENCH_LABELS = {"truthfulqa_tr": "TruthfulQA-TR", "mmlu_tr": "MMLU-TR",
+                "hallucination_tr": "Hallucination", "bias_tr": "Bias Detection"}
+
+# High-end aesthetic palette (Midnight & Cyan/Teal)
+PALETTE = ["#66FCF1", "#45A29E", "#E2D810", "#D9138A", "#12A4D9", "#322E2F", "#F3E37C"]
+
+CSS = """
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg-app: #0A0F16;
+  --bg-card: #111822;
+  --bg-card-hover: #17202D;
+  --border-light: #1E293B;
+  --text-main: #F8FAFC;
+  --text-muted: #94A3B8;
+  --accent-cyan: #66FCF1;
+  --accent-teal: #45A29E;
 }
 
-# ─── Premium Color Palette ───
-COLORS = {
-    "bg": "#0a0a0f",
-    "card": "#12121a",
-    "border": "#1e1e2e",
-    "accent1": "#00e5a0",   # Emerald
-    "accent2": "#7c5cfc",   # Violet
-    "accent3": "#ff6b6b",   # Coral
-    "accent4": "#ffd93d",   # Gold
-    "text": "#e8e8ef",
-    "muted": "#6b6b80",
-}
-
-CHART_COLORS = ["#00e5a0", "#7c5cfc", "#ff6b6b", "#ffd93d", "#00b4d8", "#ff85a1", "#b8f2e6", "#c9b1ff"]
-
-CUSTOM_CSS = """
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-
-* { font-family: 'Space Grotesk', sans-serif !important; }
+* { font-family: 'Plus Jakarta Sans', sans-serif !important; box-sizing: border-box; }
 code, pre, .mono { font-family: 'JetBrains Mono', monospace !important; }
 
-.gradio-container {
-    background: linear-gradient(135deg, #0a0a0f 0%, #0d0d1a 50%, #0a0f14 100%) !important;
-    max-width: 1400px !important;
-}
+body, .gradio-container { background-color: var(--bg-app) !important; color: var(--text-main) !important; }
+.gradio-container { max-width: 1400px !important; padding: 0 32px !important; margin: 0 auto !important; }
 
-/* Hero Header */
-.hero-section {
-    background: linear-gradient(135deg, rgba(124,92,252,0.08) 0%, rgba(0,229,160,0.06) 100%);
-    border: 1px solid rgba(124,92,252,0.15);
-    border-radius: 20px;
-    padding: 40px;
-    margin-bottom: 24px;
-    position: relative;
-    overflow: hidden;
+/* ── Hero Section ── */
+.hero {
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: 40px;
+    background: radial-gradient(circle at top left, rgba(69, 162, 158, 0.08), transparent 50%);
 }
-.hero-section::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle at 30% 50%, rgba(0,229,160,0.04) 0%, transparent 50%),
-                radial-gradient(circle at 70% 50%, rgba(124,92,252,0.04) 0%, transparent 50%);
-    animation: pulse 8s ease-in-out infinite alternate;
-}
-@keyframes pulse {
-    0% { opacity: 0.5; transform: scale(1); }
-    100% { opacity: 1; transform: scale(1.05); }
-}
-.hero-title {
-    font-size: 2.4em;
-    font-weight: 700;
-    background: linear-gradient(135deg, #00e5a0 0%, #7c5cfc 50%, #ff6b6b 100%);
+.hero h1 {
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0 0 12px;
+    background: linear-gradient(90deg, #FFFFFF, #94A3B8);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin: 0 0 8px 0;
-    position: relative;
-    z-index: 1;
 }
-.hero-subtitle {
-    color: #9999b0;
-    font-size: 1.05em;
-    position: relative;
-    z-index: 1;
+.hero p {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 600px;
+    line-height: 1.6;
+    margin: 0 0 24px;
 }
-.hero-badges {
-    display: flex;
-    gap: 12px;
-    margin-top: 16px;
-    flex-wrap: wrap;
-    position: relative;
-    z-index: 1;
-}
+.badges { display: flex; gap: 12px; flex-wrap: wrap; }
 .badge {
     padding: 6px 14px;
-    border-radius: 999px;
-    font-size: 0.8em;
-    font-weight: 500;
-    letter-spacing: 0.02em;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 1px solid;
 }
-.badge-emerald { background: rgba(0,229,160,0.12); color: #00e5a0; border: 1px solid rgba(0,229,160,0.25); }
-.badge-violet { background: rgba(124,92,252,0.12); color: #7c5cfc; border: 1px solid rgba(124,92,252,0.25); }
-.badge-coral { background: rgba(255,107,107,0.12); color: #ff6b6b; border: 1px solid rgba(255,107,107,0.25); }
-.badge-gold { background: rgba(255,217,61,0.12); color: #ffd93d; border: 1px solid rgba(255,217,61,0.25); }
+.badge-teal { background: rgba(69, 162, 158, 0.1); color: var(--accent-teal); border-color: rgba(69, 162, 158, 0.3); }
+.badge-cyan { background: rgba(102, 252, 241, 0.1); color: var(--accent-cyan); border-color: rgba(102, 252, 241, 0.3); }
 
-/* Tabs */
-.tabs { border: none !important; }
-.tab-nav { 
-    background: rgba(18,18,26,0.6) !important;
-    border: 1px solid #1e1e2e !important;
-    border-radius: 14px !important;
-    padding: 6px !important;
-    gap: 4px !important;
+/* ── Metrics Row ── */
+.metrics-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 40px;
 }
-.tab-nav button {
-    border-radius: 10px !important;
-    padding: 10px 20px !important;
-    font-weight: 500 !important;
-    color: #6b6b80 !important;
-    border: none !important;
-    transition: all 0.3s ease !important;
-}
-.tab-nav button.selected {
-    background: linear-gradient(135deg, rgba(0,229,160,0.15), rgba(124,92,252,0.15)) !important;
-    color: #e8e8ef !important;
-    border: 1px solid rgba(0,229,160,0.3) !important;
-}
-
-/* DataFrames */
-.dataframe {
-    border: 1px solid #1e1e2e !important;
-    border-radius: 14px !important;
-    overflow: hidden !important;
-}
-table { background: #12121a !important; }
-th {
-    background: linear-gradient(135deg, rgba(124,92,252,0.1), rgba(0,229,160,0.05)) !important;
-    color: #b0b0c8 !important;
-    font-weight: 600 !important;
-    text-transform: uppercase !important;
-    font-size: 0.75em !important;
-    letter-spacing: 0.08em !important;
-    padding: 14px 16px !important;
-    border-bottom: 1px solid #1e1e2e !important;
-}
-td {
-    color: #d0d0e0 !important;
-    padding: 12px 16px !important;
-    border-bottom: 1px solid rgba(30,30,46,0.5) !important;
-    font-size: 0.9em !important;
-}
-tr:hover td { background: rgba(0,229,160,0.03) !important; }
-
-/* Buttons */
-.primary {
-    background: linear-gradient(135deg, #00e5a0 0%, #00c48c 100%) !important;
-    color: #0a0a0f !important;
-    font-weight: 600 !important;
-    border: none !important;
-    border-radius: 12px !important;
-    padding: 12px 24px !important;
-    letter-spacing: 0.02em !important;
-    transition: all 0.3s ease !important;
-}
-.primary:hover {
-    box-shadow: 0 0 30px rgba(0,229,160,0.3) !important;
-    transform: translateY(-1px) !important;
-}
-
-/* Dropdowns */
-.wrap { border: 1px solid #1e1e2e !important; border-radius: 12px !important; background: #12121a !important; }
-select, input { color: #e8e8ef !important; background: #12121a !important; }
-
-/* Plots */
-.plot-container { border: 1px solid #1e1e2e !important; border-radius: 16px !important; overflow: hidden !important; }
-
-/* Stat cards */
-.stat-card {
-    background: linear-gradient(135deg, #12121a, #161625);
-    border: 1px solid #1e1e2e;
+.metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
     border-radius: 16px;
-    padding: 20px;
-    text-align: center;
-}
-.stat-value {
-    font-size: 2em;
-    font-weight: 700;
-    background: linear-gradient(135deg, #00e5a0, #7c5cfc);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-.stat-label { color: #6b6b80; font-size: 0.85em; margin-top: 4px; }
-
-/* Footer */
-.footer-text {
-    text-align: center;
-    color: #3a3a50;
-    font-size: 0.8em;
     padding: 24px;
-    border-top: 1px solid #1e1e2e;
-    margin-top: 32px;
+    transition: transform 0.2s, border-color 0.2s;
 }
+.metric-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-teal);
+}
+.metric-value {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1;
+    margin-bottom: 8px;
+}
+.metric-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ── Custom Leaderboard Table ── */
+.custom-table-wrapper {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+.custom-table th {
+    background: rgba(0,0,0,0.2);
+    padding: 16px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-light);
+}
+.custom-table td {
+    padding: 16px 20px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-main);
+    vertical-align: middle;
+}
+.custom-table tr:last-child td { border-bottom: none; }
+.custom-table tr:hover { background: var(--bg-card-hover); }
+.custom-table .rank { font-weight: 700; color: var(--text-muted); width: 50px; }
+.custom-table .model-name { font-weight: 700; color: var(--accent-cyan); font-size: 15px; }
+.custom-table .score-main { font-weight: 800; color: #FFF; background: rgba(102, 252, 241, 0.1); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(102, 252, 241, 0.2); }
+
+/* ── Gradio Tabs Overrides ── */
+.tabs { background: transparent !important; border: none !important; }
+.tab-nav { border-bottom: 1px solid var(--border-light) !important; background: transparent !important; margin-bottom: 24px !important; padding: 0 !important;}
+.tab-nav button { background: transparent !important; border: none !important; color: var(--text-muted) !important; font-weight: 600 !important; font-size: 15px !important; padding: 12px 24px !important; border-bottom: 2px solid transparent !important; border-radius: 0 !important;}
+.tab-nav button.selected { color: var(--text-main) !important; border-bottom-color: var(--accent-cyan) !important; }
+.tab-nav button:hover { color: var(--text-main) !important; }
+
+/* ── Plots & Container ── */
+.plot-container { background: var(--bg-card) !important; border: 1px solid var(--border-light) !important; border-radius: 16px !important; padding: 16px !important;}
+
+/* ── Dropdowns & Buttons ── */
+.wrap { background: var(--bg-card) !important; border: 1px solid var(--border-light) !important; border-radius: 12px !important; }
+input, select, textarea { background: var(--bg-card) !important; color: var(--text-main) !important; border: none !important; font-size: 14px !important; }
+.primary { background: var(--accent-teal) !important; color: #000 !important; font-weight: 700 !important; border-radius: 12px !important; transition: all 0.2s !important; }
+.primary:hover { background: var(--accent-cyan) !important; transform: scale(1.02); }
+
+/* ── Markdown ── */
+.prose { color: var(--text-muted) !important; font-size: 15px !important; line-height: 1.7 !important; }
+.prose h2, .prose h3 { color: var(--text-main) !important; font-weight: 700 !important; margin-top: 32px !important; }
+.prose strong { color: var(--text-main) !important; }
+.prose table { width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid var(--border-light); border-radius: 12px; overflow: hidden; }
+.prose th { background: rgba(0,0,0,0.2); padding: 12px; text-align: left; font-size: 13px; color: var(--text-muted); }
+.prose td { padding: 12px; border-top: 1px solid var(--border-light); }
+
+.footer { text-align: center; margin-top: 60px; padding: 30px 0; border-top: 1px solid var(--border-light); color: var(--text-muted); font-size: 13px; }
+.footer a { color: var(--accent-teal); text-decoration: none; }
+.footer a:hover { color: var(--accent-cyan); text-decoration: underline; }
 """
 
-PLOTLY_BASE = dict(
-    paper_bgcolor="rgba(18,18,26,0)",
-    plot_bgcolor="rgba(18,18,26,0.3)",
-    font=dict(family="Space Grotesk, sans-serif", color="#b0b0c8", size=13),
-    legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(color="#9999b0")),
-    margin=dict(t=60, b=40, l=50, r=20),
+# Plotly Base Theme Configuration for dark premium aesthetic
+PL = dict(
+    paper_bgcolor="rgba(0,0,0,0)",
+    plot_bgcolor="rgba(0,0,0,0)",
+    font=dict(family="Plus Jakarta Sans, sans-serif", color="#94A3B8", size=13),
+    legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(color="#F8FAFC", size=12), orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    margin=dict(t=60, b=40, l=40, r=20)
 )
-
 
 def load_data():
     if SAMPLE_DATA.exists():
@@ -222,237 +188,270 @@ def load_data():
             return json.load(f)
     return []
 
-
-def create_leaderboard_df(data):
-    df = pd.DataFrame(data)
-    df = df.sort_values("turkeval_score", ascending=False).reset_index(drop=True)
-    df.index = df.index + 1
-    df.index.name = "#"
-    df = df.rename(columns={
-        "model_name": "Model", "developer": "Developer", "parameters": "Params",
-        "turkeval_score": "TurkEval™", "truthfulqa_tr": "TruthfulQA",
-        "mmlu_tr": "MMLU", "hallucination_tr": "Halluc.", "bias_tr": "Bias",
-    })
-    return df[["Model", "Developer", "Params", "TurkEval™", "TruthfulQA", "MMLU", "Halluc.", "Bias"]]
-
-
-def make_ranking_chart(data):
+def generate_leaderboard_html(data):
     sd = sorted(data, key=lambda x: x["turkeval_score"], reverse=True)
-    names = [d["model_name"] for d in sd]
-    scores = [d["turkeval_score"] for d in sd]
+    html = '<div class="custom-table-wrapper"><table class="custom-table">'
+    html += '<thead><tr><th class="rank">#</th><th>Model</th><th>Developer</th><th>Params</th><th>TurkEval™</th><th>TruthfulQA</th><th>MMLU</th><th>Halluc.</th><th>Bias</th></tr></thead>'
+    html += '<tbody>'
+    for i, m in enumerate(sd, 1):
+        html += f'''<tr>
+            <td class="rank">{i}</td>
+            <td class="model-name">{m["model_name"]}</td>
+            <td style="color: var(--text-muted);">{m.get("developer", "-")}</td>
+            <td style="color: var(--text-muted);">{m.get("parameters", "-")}</td>
+            <td><span class="score-main">{m["turkeval_score"]:.1f}</span></td>
+            <td>{m.get("truthfulqa_tr", 0):.1f}</td>
+            <td>{m.get("mmlu_tr", 0):.1f}</td>
+            <td>{m.get("hallucination_tr", 0):.1f}</td>
+            <td>{m.get("bias_tr", 0):.1f}</td>
+        </tr>'''
+    html += '</tbody></table></div>'
+    return html
+
+def ranking_chart(data):
+    sd = sorted(data, key=lambda x: x["turkeval_score"], reverse=True)
+    colors = ["#66FCF1" if s["turkeval_score"] >= 80 else "#45A29E" if s["turkeval_score"] >= 65 else "#2C5B59" for s in sd]
     
-    colors = []
-    for s in scores:
-        if s >= 85: colors.append("#00e5a0")
-        elif s >= 70: colors.append("#7c5cfc")
-        elif s >= 60: colors.append("#ffd93d")
-        else: colors.append("#ff6b6b")
-
     fig = go.Figure(go.Bar(
-        x=scores, y=names, orientation="h", marker=dict(
-            color=colors, line=dict(width=0),
-            cornerradius=6,
-        ),
-        text=[f"<b>{s:.1f}</b>" for s in scores], textposition="outside",
-        textfont=dict(color="#e8e8ef", size=13, family="Space Grotesk"),
-        hovertemplate="<b>%{y}</b><br>TurkEval™: %{x:.1f}<extra></extra>",
+        x=[d["turkeval_score"] for d in sd], 
+        y=[d["model_name"] for d in sd],
+        orientation="h", 
+        marker=dict(color=colors, cornerradius=6),
+        text=[f'{d["turkeval_score"]:.1f}' for d in sd], 
+        textposition="outside",
+        textfont=dict(color="#F8FAFC", size=13, family="Plus Jakarta Sans"),
+        hovertemplate="<b>%{y}</b><br>Score: %{x:.1f}<extra></extra>"
     ))
+    
     fig.update_layout(
-        **PLOTLY_BASE,
-        title=dict(text="<b>⚡ TurkEval™ Score Rankings</b>", x=0.02),
-        height=380, yaxis=dict(autorange="reversed"),
-        xaxis=dict(range=[0, max(scores) * 1.15], title=""),
+        **PL, 
+        height=400, 
+        title=dict(text="Score Distribution", font=dict(size=18, color="#F8FAFC", weight="bold"), x=0),
+        yaxis=dict(autorange="reversed", gridcolor="rgba(0,0,0,0)"),
+        xaxis=dict(range=[0, max(d["turkeval_score"] for d in sd) * 1.15], gridcolor="#1E293B")
     )
     return fig
 
-
-def make_radar(data):
+def radar_chart(data):
     fig = go.Figure()
-    cats = BENCHMARKS
+    top4 = sorted(data, key=lambda x: x["turkeval_score"], reverse=True)[:4]
     labels = ["TruthfulQA", "MMLU", "Hallucination", "Bias"]
-
-    for i, m in enumerate(sorted(data, key=lambda x: x["turkeval_score"], reverse=True)[:5]):
-        vals = [m.get(c, 0) for c in cats] + [m.get(cats[0], 0)]
+    
+    for i, m in enumerate(top4):
+        vals = [m.get(b, 0) for b in BENCHMARKS] + [m.get(BENCHMARKS[0], 0)]
+        c = PALETTE[i % len(PALETTE)]
+        
+        h = c.lstrip('#')
+        rgba_fill = f"rgba({int(h[0:2], 16)}, {int(h[2:4], 16)}, {int(h[4:6], 16)}, 0.15)"
+        
         fig.add_trace(go.Scatterpolar(
-            r=vals, theta=labels + [labels[0]], fill="toself",
-            name=m["model_name"], line_color=CHART_COLORS[i],
-            fillcolor=f"rgba({int(CHART_COLORS[i][1:3],16)},{int(CHART_COLORS[i][3:5],16)},{int(CHART_COLORS[i][5:7],16)},0.08)",
-            line_width=2.5,
+            r=vals, 
+            theta=labels + [labels[0]], 
+            fill="toself", 
+            name=m["model_name"],
+            line=dict(color=c, width=3),
+            fillcolor=rgba_fill,
+            marker=dict(size=8, color=c)
         ))
-
+        
     fig.update_layout(
-        **PLOTLY_BASE,
+        **PL, 
+        height=500, 
+        title=dict(text="Multidimensional Capability Profile (Top 4)", font=dict(size=18, color="#F8FAFC"), x=0),
         polar=dict(
-            bgcolor="rgba(18,18,26,0.3)",
-            radialaxis=dict(visible=True, range=[0, 100], gridcolor="rgba(30,30,46,0.6)", linecolor="#1e1e2e"),
-            angularaxis=dict(gridcolor="rgba(30,30,46,0.4)", linecolor="#1e1e2e"),
-        ),
-        title=dict(text="<b>🕸️ Multi-Dimensional Comparison</b>", x=0.02),
-        height=500, showlegend=True,
+            bgcolor="rgba(0,0,0,0)",
+            radialaxis=dict(visible=True, range=[0, 100], gridcolor="#1E293B", linecolor="#1E293B", tickfont=dict(color="#94A3B8")),
+            angularaxis=dict(gridcolor="#1E293B", linecolor="#1E293B", tickfont=dict(color="#F8FAFC", size=13))
+        )
     )
     return fig
 
-
-def make_grouped_bar(data):
+def bar_chart(data):
     rows = []
     for m in data:
         for b in BENCHMARKS:
-            rows.append({"Model": m["model_name"], "Benchmark": BENCH_LABELS.get(b, b), "Score": m.get(b, 0)})
+            rows.append({"Model": m["model_name"], "Benchmark": BENCH_LABELS[b], "Score": m.get(b, 0)})
+    
     df = pd.DataFrame(rows)
-    fig = px.bar(df, x="Model", y="Score", color="Benchmark", barmode="group",
-                 color_discrete_sequence=CHART_COLORS[:4], height=450)
-    fig.update_layout(**PLOTLY_BASE,
-                      title=dict(text="<b>📊 Per-Benchmark Breakdown</b>", x=0.02),
-                      xaxis_tickangle=-25, bargap=0.2, bargroupgap=0.05)
+    fig = px.bar(
+        df, x="Model", y="Score", color="Benchmark", barmode="group",
+        color_discrete_sequence=["#66FCF1", "#45A29E", "#3B82F6", "#8B5CF6"], 
+        height=450
+    )
+    
+    fig.update_layout(
+        **PL, 
+        title=dict(text="Detailed Benchmark Breakdown", font=dict(size=18, color="#F8FAFC"), x=0),
+        xaxis_tickangle=-30, 
+        bargap=0.2, 
+        bargroupgap=0.1
+    )
     fig.update_traces(marker_cornerradius=4)
     return fig
 
-
-def make_heatmap(data):
-    models = [d["model_name"] for d in sorted(data, key=lambda x: x["turkeval_score"], reverse=True)]
-    z = [[d.get(b, 0) for b in BENCHMARKS] for d in sorted(data, key=lambda x: x["turkeval_score"], reverse=True)]
+def heatmap_chart(data):
+    sd = sorted(data, key=lambda x: x["turkeval_score"], reverse=True)
+    z = [[d.get(b, 0) for b in BENCHMARKS] for d in sd]
+    
+    colorscale = [
+        [0, "#0A0F16"], 
+        [0.4, "#1E293B"], 
+        [0.7, "#45A29E"], 
+        [1, "#66FCF1"]
+    ]
+    
     fig = go.Figure(go.Heatmap(
-        z=z, x=["TruthfulQA", "MMLU", "Hallucination", "Bias"], y=models,
-        colorscale=[[0, "#1a0a2e"], [0.3, "#7c5cfc"], [0.6, "#00e5a0"], [1, "#ffd93d"]],
-        text=[[f"{v:.1f}" for v in row] for row in z], texttemplate="%{text}",
-        textfont={"size": 12, "color": "#e8e8ef"},
+        z=z, 
+        x=list(BENCH_LABELS.values()), 
+        y=[d["model_name"] for d in sd],
+        colorscale=colorscale,
+        text=[[f"{v:.1f}" for v in row] for row in z], 
+        texttemplate="%{text}",
+        textfont=dict(size=13, color="#FFFFFF", family="Plus Jakarta Sans"),
         hovertemplate="<b>%{y}</b><br>%{x}: %{z:.1f}<extra></extra>",
+        showscale=False
     ))
-    fig.update_layout(**PLOTLY_BASE,
-                      title=dict(text="<b>🌡️ Performance Heatmap</b>", x=0.02),
-                      height=400)
+    
+    fig.update_layout(
+        **PL, 
+        height=400, 
+        title=dict(text="Density Matrix", font=dict(size=18, color="#F8FAFC"), x=0),
+        xaxis=dict(gridcolor="rgba(0,0,0,0)", tickfont=dict(size=13)),
+        yaxis=dict(gridcolor="rgba(0,0,0,0)", tickfont=dict(size=13))
+    )
     return fig
 
-
-def compare_models(m1, m2, data):
+def compare(m1, m2, data):
     d1 = next((d for d in data if d["model_name"] == m1), None)
     d2 = next((d for d in data if d["model_name"] == m2), None)
     if not d1 or not d2:
-        return go.Figure(), "Model bulunamadı"
-
-    labels = list(BENCH_LABELS.values())
-    v1 = [d1.get(c, 0) for c in BENCHMARKS]
-    v2 = [d2.get(c, 0) for c in BENCHMARKS]
-
+        return go.Figure(), "Please select two distinct models for comparison."
+        
+    v1, v2 = [d1.get(b, 0) for b in BENCHMARKS], [d2.get(b, 0) for b in BENCHMARKS]
+    
     fig = go.Figure()
-    fig.add_trace(go.Bar(name=m1, x=labels, y=v1, marker_color="#00e5a0", marker_cornerradius=6))
-    fig.add_trace(go.Bar(name=m2, x=labels, y=v2, marker_color="#7c5cfc", marker_cornerradius=6))
-    fig.update_layout(**PLOTLY_BASE, barmode="group",
-                      title=dict(text=f"<b>⚔️ {m1} vs {m2}</b>", x=0.02), height=400)
-
+    fig.add_trace(go.Bar(name=m1, x=list(BENCH_LABELS.values()), y=v1, marker_color="#66FCF1", marker_cornerradius=6))
+    fig.add_trace(go.Bar(name=m2, x=list(BENCH_LABELS.values()), y=v2, marker_color="#3B82F6", marker_cornerradius=6))
+    
+    fig.update_layout(
+        **PL, 
+        barmode="group", 
+        height=450,
+        title=dict(text=f"Head-to-Head: {m1} vs {m2}", font=dict(size=18, color="#F8FAFC"), x=0),
+        bargroupgap=0.1
+    )
+    
     diff = d1["turkeval_score"] - d2["turkeval_score"]
-    winner = m1 if diff > 0 else m2
-    md = f"### 🏆 Kazanan: **{winner}**\nFark: **{abs(diff):.1f}** puan\n\n| Benchmark | {m1} | {m2} | Δ |\n|---|---|---|---|\n"
-    for i, c in enumerate(BENCHMARKS):
-        s1, s2 = d1.get(c, 0), d2.get(c, 0)
-        delta = s1 - s2
-        icon = "🟢" if delta > 0 else "🔴" if delta < 0 else "⚪"
-        md += f"| {BENCH_LABELS[c]} | {s1:.1f} | {s2:.1f} | {icon} {delta:+.1f} |\n"
-    md += f"\n| **TurkEval™** | **{d1['turkeval_score']:.1f}** | **{d2['turkeval_score']:.1f}** | **{diff:+.1f}** |"
+    winner = m1 if diff > 0 else m2 if diff < 0 else "Tie"
+    
+    md = f"### Ultimate Winner: **{winner}** &nbsp;(Margin: {abs(diff):.1f} pts)\n\n"
+    md += f"| Evaluation Axis | {m1} | {m2} | Delta |\n|:---|:---|:---|:---|\n"
+    for b in BENCHMARKS:
+        s1, s2 = d1.get(b, 0), d2.get(b, 0)
+        d = s1 - s2
+        arrow = '🟢 ↑' if d>0 else '🔴 ↓' if d<0 else '⚪ ='
+        md += f"| **{BENCH_LABELS[b]}** | {s1:.1f} | {s2:.1f} | {arrow} {abs(d):.1f} |\n"
+    md += f"| **TurkEval™ Composite** | **{d1['turkeval_score']:.1f}** | **{d2['turkeval_score']:.1f}** | **{diff:+.1f}** |"
+    
     return fig, md
 
-
-def build_app():
+def build():
     data = load_data()
-    df = create_leaderboard_df(data)
     names = [d["model_name"] for d in sorted(data, key=lambda x: x["turkeval_score"], reverse=True)]
-    top = data[0] if data else {}
+    leaderboard_html = generate_leaderboard_html(data)
 
-    with gr.Blocks(css=CUSTOM_CSS, title="TurkishLLM-Eval") as app:
-
-        # ── Hero ──
-        gr.HTML(f"""
-        <div class="hero-section">
-            <div class="hero-title">🇹🇷 TurkishLLM-Eval</div>
-            <div class="hero-subtitle">
-                Türkçe LLM'ler için kapsamlı Halüsinasyon, Doğruluk ve Önyargı Benchmark Platformu
-            </div>
-            <div class="hero-badges">
-                <span class="badge badge-emerald">GPT-4o + Claude Judge Ensemble</span>
-                <span class="badge badge-violet">4 Benchmark Suite</span>
-                <span class="badge badge-coral">80+ Test Case</span>
-                <span class="badge badge-gold">TurkEval™ Composite Score</span>
+    with gr.Blocks(title="TurkishLLM-Eval Enterprise") as app:
+        
+        # Hero Section
+        gr.HTML("""
+        <div class="hero">
+            <h1>TurkishLLM-Eval</h1>
+            <p>The definitive benchmark platform for Turkish Large Language Models. Evaluates truthfulness, reasoning, hallucination rates, and cultural bias using a rigorous multi-judge ensemble.</p>
+            <div class="badges">
+                <span class="badge badge-cyan">v0.1.0-beta</span>
+                <span class="badge badge-teal">GPT-4o + Claude 3.5 Judges</span>
+                <span class="badge badge-teal">80+ Curated Scenarios</span>
             </div>
         </div>
         """)
+        
+        # KPI Row
+        gr.HTML(f"""
+        <div class="metrics-row">
+            <div class="metric-card"><div class="metric-value">{len(data)}</div><div class="metric-label">Models Evaluated</div></div>
+            <div class="metric-card"><div class="metric-value">4</div><div class="metric-label">Core Dimensions</div></div>
+            <div class="metric-card"><div class="metric-value">160+</div><div class="metric-label">LLM Judgments</div></div>
+            <div class="metric-card"><div class="metric-value">1</div><div class="metric-label">Standardized Score</div></div>
+        </div>
+        """)
 
-        # ── Stats Row ──
-        with gr.Row():
-            gr.HTML(f'<div class="stat-card"><div class="stat-value">{len(data)}</div><div class="stat-label">Models Evaluated</div></div>')
-            gr.HTML(f'<div class="stat-card"><div class="stat-value">4</div><div class="stat-label">Benchmark Suites</div></div>')
-            gr.HTML(f'<div class="stat-card"><div class="stat-value">80+</div><div class="stat-label">Test Questions</div></div>')
-            gr.HTML(f'<div class="stat-card"><div class="stat-value">2</div><div class="stat-label">LLM Judges</div></div>')
-
-        # ── Tabs ──
         with gr.Tabs():
-            with gr.Tab("🏆 Leaderboard"):
-                gr.Dataframe(value=df, interactive=False, wrap=True)
-                gr.Plot(value=make_ranking_chart(data))
+            with gr.Tab("Leaderboard"):
+                gr.HTML(leaderboard_html)
+                gr.Plot(value=ranking_chart(data))
 
-            with gr.Tab("📊 Deep Analysis"):
+            with gr.Tab("Deep Analysis"):
                 with gr.Row():
-                    gr.Plot(value=make_radar(data))
-                gr.Plot(value=make_grouped_bar(data))
-                gr.Plot(value=make_heatmap(data))
+                    gr.Plot(value=radar_chart(data))
+                gr.Plot(value=bar_chart(data))
+                gr.Plot(value=heatmap_chart(data))
 
-            with gr.Tab("⚔️ Head-to-Head"):
-                gr.Markdown("### İki modeli doğrudan karşılaştır")
+            with gr.Tab("Head-to-Head"):
                 with gr.Row():
-                    dd1 = gr.Dropdown(choices=names, label="Model 1", value=names[0] if names else None)
-                    dd2 = gr.Dropdown(choices=names, label="Model 2", value=names[1] if len(names) > 1 else None)
-                btn = gr.Button("⚡ Karşılaştır", variant="primary", size="lg")
-                comp_plot = gr.Plot()
-                comp_md = gr.Markdown()
-                btn.click(fn=lambda a, b: compare_models(a, b, data), inputs=[dd1, dd2], outputs=[comp_plot, comp_md])
+                    dd1 = gr.Dropdown(choices=names, label="Primary Model", value=names[0] if names else None)
+                    dd2 = gr.Dropdown(choices=names, label="Comparison Model", value=names[1] if len(names) > 1 else None)
+                btn = gr.Button("Execute Comparison", variant="primary")
+                plot = gr.Plot()
+                md = gr.Markdown()
+                btn.click(fn=lambda a, b: compare(a, b, data), inputs=[dd1, dd2], outputs=[plot, md])
 
-            with gr.Tab("📖 Methodology"):
+            with gr.Tab("Methodology"):
                 gr.Markdown("""
-## TurkEval™ Composite Score
+## Evaluation Architecture
 
-```
-TurkEval™ = 0.30 × TruthfulQA-TR + 0.25 × MMLU-TR + 0.25 × Anti-Hallucination + 0.20 × Anti-Bias
-```
+The **TurkEval™** composite score is a weighted aggregation designed specifically for enterprise and production readiness in the Turkish language.
 
-| Grade | Score Range | Meaning |
-|-------|------------|---------|
-| **A+** | ≥ 90 | Exceptional — production-ready |
-| **A** | ≥ 80 | Strong — reliable |
-| **B** | ≥ 70 | Good — usable with supervision |
-| **C** | ≥ 60 | Fair — significant limitations |
-| **F** | < 50 | Failing — not recommended |
+**TurkEval™ = (0.30 × TruthfulQA) + (0.25 × MMLU) + (0.25 × Anti-Hallucination) + (0.20 × Anti-Bias)**
 
----
+### Confidence Intervals & Grading
 
-### Judge Pipeline
+| Grade | Threshold | Enterprise Implication |
+|:------|:----------|:-----------------------|
+| **A+** | ≥ 90 | Production-ready for critical Turkish deployments. |
+| **A** | ≥ 80 | Highly reliable with minor, predictable edge cases. |
+| **B** | ≥ 70 | Usable in human-in-the-loop workflows. |
+| **C** | ≥ 60 | Significant limitations; high risk of hallucination. |
+| **F** | < 50 | Not recommended for Turkish language tasks. |
 
-| Judge | Weight | Role |
-|-------|--------|------|
-| **GPT-4o** | 0.55 | Primary evaluator |
-| **Claude 3.5 Sonnet** | 0.45 | Cross-validator |
+### Multi-Judge Ensemble
 
-Inter-judge agreement measured via **Cohen's κ** coefficient.
+To mitigate single-model bias (such as GPT-4 preferring its own outputs), we utilize a weighted ensemble:
+- **Primary Judge:** GPT-4o (Weight: 0.55)
+- **Secondary Judge:** Claude 3.5 Sonnet (Weight: 0.45)
 
-### Bias Taxonomy (Turkey-Specific)
+*Inter-judge agreement is strictly monitored via Cohen's Kappa (κ).*
 
-| Category | Turkish | Focus |
-|----------|---------|-------|
-| Gender | Cinsiyet | Professional stereotypes, family roles |
-| Ethnic | Etnik | Kurdish, Arab, Laz, Roma stereotypes |
-| Sectarian | Mezhepsel | Sunni/Alevi dynamics |
-| Regional | Bölgesel | East-West, urban-rural divide |
-| Socioeconomic | Sosyoekonomik | Class & education bias |
+### Turkey-Specific Bias Taxonomy
 
----
-
-**Source Code:** [github.com/saciducak/TurkishLLM-Eval](https://github.com/saciducak/TurkishLLM-Eval)  
-**License:** Apache 2.0
+Evaluations are rooted in the cultural context of Turkey, covering:
+- **Gender Dynamics:** Professional stereotypes, familial roles in Turkish society.
+- **Ethnic & Regional:** Perceptions of demographic groups (e.g., East vs. West dynamics).
+- **Sectarian & Socioeconomic:** Class, education, and religious biases.
                 """)
 
-        gr.HTML('<div class="footer-text">Built with 🤍 by Muhammed Sacid Ucak · Apache 2.0 · TurkishLLM-Eval v0.1.0</div>')
-
+        gr.HTML('''
+        <div class="footer">
+            Built by <a href="https://github.com/saciducak" target="_blank">Muhammed Sacid Ucak</a> 
+            <span style="margin: 0 12px; color: var(--border-light);">|</span> 
+            <a href="https://github.com/saciducak/TurkishLLM-Eval" target="_blank">GitHub Repository</a>
+            <span style="margin: 0 12px; color: var(--border-light);">|</span> 
+            Apache 2.0 License
+        </div>
+        ''')
+        
     return app
 
-
 if __name__ == "__main__":
-    app = build_app()
-    app.launch(server_port=PORT, server_name="0.0.0.0", share=False)
+    app = build()
+    app.launch(server_port=PORT, server_name="0.0.0.0", share=False, css=CSS)
+
