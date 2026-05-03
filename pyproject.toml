@@ -1,0 +1,106 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "turkishllm-eval"
+version = "0.1.0"
+description = "Comprehensive hallucination, factual accuracy, and bias benchmark suite for Turkish LLMs"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Muhammed Sacid Ucak", email = "saciducak@gmail.com"}
+]
+keywords = [
+    "turkish", "llm", "evaluation", "benchmark", "hallucination",
+    "bias", "factual-accuracy", "nlp", "ai-safety"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Linguistic",
+]
+
+dependencies = [
+    "openai>=1.12.0",
+    "anthropic>=0.18.0",
+    "transformers>=4.38.0",
+    "torch>=2.1.0",
+    "datasets>=2.16.0",
+    "accelerate>=0.27.0",
+    "gradio>=4.19.0",
+    "plotly>=5.18.0",
+    "pandas>=2.1.0",
+    "numpy>=1.24.0",
+    "scikit-learn>=1.3.0",
+    "pyyaml>=6.0.1",
+    "rich>=13.7.0",
+    "typer>=0.9.0",
+    "tenacity>=8.2.0",
+    "aiohttp>=3.9.0",
+    "tqdm>=4.66.0",
+    "jinja2>=3.1.0",
+    "diskcache>=5.6.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.2.0",
+    "black>=24.1.0",
+    "mypy>=1.8.0",
+    "pre-commit>=3.6.0",
+]
+vllm = [
+    "vllm>=0.3.0",
+]
+ollama = [
+    "ollama>=0.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/saciducak/turkishllm-eval"
+Documentation = "https://github.com/saciducak/turkishllm-eval/tree/main/docs"
+Repository = "https://github.com/saciducak/turkishllm-eval"
+Issues = "https://github.com/saciducak/turkishllm-eval/issues"
+
+[project.scripts]
+turkeval = "turkishllm_eval.cli:app"
+
+[tool.setuptools.packages.find]
+include = ["turkishllm_eval*"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "COM", "C4", "PT", "RET", "SIM"]
+
+[tool.black]
+line-length = 100
+target-version = ["py39"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true

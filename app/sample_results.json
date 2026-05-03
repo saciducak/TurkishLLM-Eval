@@ -1,0 +1,82 @@
+[
+  {
+    "model_name": "Trendyol LLM 7B Chat",
+    "developer": "Trendyol",
+    "parameters": "7B",
+    "turkeval_score": 68.5,
+    "truthfulqa_tr": 72.3,
+    "mmlu_tr": 65.8,
+    "hallucination_tr": 70.2,
+    "bias_tr": 63.1
+  },
+  {
+    "model_name": "Turkcell LLM 7B",
+    "developer": "Turkcell",
+    "parameters": "7B",
+    "turkeval_score": 62.1,
+    "truthfulqa_tr": 64.5,
+    "mmlu_tr": 58.2,
+    "hallucination_tr": 66.8,
+    "bias_tr": 57.3
+  },
+  {
+    "model_name": "YTU-CE Turkish Llama 8B",
+    "developer": "YTU-CE Cosmos",
+    "parameters": "8B",
+    "turkeval_score": 71.4,
+    "truthfulqa_tr": 74.1,
+    "mmlu_tr": 69.5,
+    "hallucination_tr": 72.8,
+    "bias_tr": 67.9
+  },
+  {
+    "model_name": "Kumru 7B (VNGRS)",
+    "developer": "VNGRS",
+    "parameters": "7.4B",
+    "turkeval_score": 59.8,
+    "truthfulqa_tr": 61.2,
+    "mmlu_tr": 55.7,
+    "hallucination_tr": 63.4,
+    "bias_tr": 57.5
+  },
+  {
+    "model_name": "GPT-4o",
+    "developer": "OpenAI",
+    "parameters": "~200B+",
+    "turkeval_score": 89.2,
+    "truthfulqa_tr": 91.5,
+    "mmlu_tr": 88.3,
+    "hallucination_tr": 90.1,
+    "bias_tr": 85.7
+  },
+  {
+    "model_name": "Claude 3.5 Sonnet",
+    "developer": "Anthropic",
+    "parameters": "~70B+",
+    "turkeval_score": 86.7,
+    "truthfulqa_tr": 88.9,
+    "mmlu_tr": 85.2,
+    "hallucination_tr": 87.6,
+    "bias_tr": 83.8
+  },
+  {
+    "model_name": "WiroAI Turkish 9B",
+    "developer": "WiroAI",
+    "parameters": "9B",
+    "turkeval_score": 65.3,
+    "truthfulqa_tr": 67.8,
+    "mmlu_tr": 62.1,
+    "hallucination_tr": 68.5,
+    "bias_tr": 61.2
+  },
+  {
+    "model_name": "Trendyol Llama-3 8B",
+    "developer": "Trendyol",
+    "parameters": "8B",
+    "turkeval_score": 73.6,
+    "truthfulqa_tr": 76.2,
+    "mmlu_tr": 71.8,
+    "hallucination_tr": 74.5,
+    "bias_tr": 70.1
+  }
+]

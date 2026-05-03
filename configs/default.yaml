@@ -1,0 +1,40 @@
+# TurkishLLM-Eval Default Configuration
+# Ports: Gradio=7847, API=7848 (project-specific, no conflicts)
+
+model_name: "trendyol-7b"
+model_type: "huggingface"
+device: "auto"
+dtype: "float16"
+
+gradio_port: 7847
+api_port: 7848
+
+benchmark:
+  benchmarks:
+    - truthfulqa_tr
+    - mmlu_tr
+    - hallucination_tr
+    - bias_tr
+  num_few_shot: 0
+  max_samples: null
+  batch_size: 8
+  generation_kwargs:
+    max_new_tokens: 512
+    temperature: 0.1
+    top_p: 0.9
+    do_sample: true
+
+judge:
+  primary_judge: "gpt-4o"
+  secondary_judge: "claude-3-5-sonnet-20241022"
+  ensemble_strategy: "weighted_average"
+  primary_weight: 0.55
+  secondary_weight: 0.45
+  temperature: 0.0
+  max_tokens: 1024
+  cache_judgments: true
+
+output_dir: "results"
+save_individual_responses: true
+export_format: "json"
+log_level: "INFO"

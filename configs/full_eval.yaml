@@ -1,0 +1,26 @@
+model_name: "trendyol-7b"
+model_type: "huggingface"
+gradio_port: 7847
+api_port: 7848
+
+benchmark:
+  benchmarks:
+    - truthfulqa_tr
+    - mmlu_tr
+    - hallucination_tr
+    - bias_tr
+  max_samples: null
+  num_few_shot: 5
+  batch_size: 16
+
+judge:
+  primary_judge: "gpt-4o"
+  secondary_judge: "claude-3-5-sonnet-20241022"
+  ensemble_strategy: "weighted_average"
+  primary_weight: 0.55
+  secondary_weight: 0.45
+
+output_dir: "results"
+save_individual_responses: true
+export_format: "both"
+log_level: "DEBUG"
