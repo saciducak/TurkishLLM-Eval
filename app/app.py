@@ -16,21 +16,21 @@ BENCHMARKS = ["truthfulqa_tr", "mmlu_tr", "hallucination_tr", "bias_tr"]
 BENCH_LABELS = {"truthfulqa_tr": "TruthfulQA-TR", "mmlu_tr": "MMLU-TR",
                 "hallucination_tr": "Hallucination", "bias_tr": "Bias Detection"}
 
-# High-end aesthetic palette (Midnight & Cyan/Teal)
-PALETTE = ["#66FCF1", "#45A29E", "#E2D810", "#D9138A", "#12A4D9", "#322E2F", "#F3E37C"]
+# Ultra-premium enterprise aesthetic palette (Apple/Vercel inspired, monochromatic & soft accents)
+PALETTE = ["#E2E8F0", "#94A3B8", "#64748B", "#475569", "#334155", "#1E293B", "#0F172A"]
 
 CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --bg-app: #0A0F16;
-  --bg-card: #111822;
-  --bg-card-hover: #17202D;
-  --border-light: #1E293B;
-  --text-main: #F8FAFC;
-  --text-muted: #94A3B8;
-  --accent-cyan: #66FCF1;
-  --accent-teal: #45A29E;
+  --bg-app: #000000;
+  --bg-card: #09090b;
+  --bg-card-hover: #18181b;
+  --border-light: #27272a;
+  --text-main: #fafafa;
+  --text-muted: #a1a1aa;
+  --accent-cyan: #e4e4e7; /* Replaced neon with crisp metallic gray/white */
+  --accent-teal: #d4d4d8;
 }
 
 * { font-family: 'Plus Jakarta Sans', sans-serif !important; box-sizing: border-box; }
@@ -44,16 +44,14 @@ body, .gradio-container { background-color: var(--bg-app) !important; color: var
     padding: 60px 0 40px;
     border-bottom: 1px solid var(--border-light);
     margin-bottom: 40px;
-    background: radial-gradient(circle at top left, rgba(69, 162, 158, 0.08), transparent 50%);
+    background: transparent;
 }
 .hero h1 {
     font-size: 38px;
     font-weight: 800;
     letter-spacing: -0.03em;
     margin: 0 0 12px;
-    background: linear-gradient(90deg, #FFFFFF, #94A3B8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--text-main);
 }
 .hero p {
     font-size: 16px;
@@ -72,8 +70,8 @@ body, .gradio-container { background-color: var(--bg-app) !important; color: var
     letter-spacing: 0.05em;
     border: 1px solid;
 }
-.badge-teal { background: rgba(69, 162, 158, 0.1); color: var(--accent-teal); border-color: rgba(69, 162, 158, 0.3); }
-.badge-cyan { background: rgba(102, 252, 241, 0.1); color: var(--accent-cyan); border-color: rgba(102, 252, 241, 0.3); }
+.badge-teal { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); border-color: rgba(255, 255, 255, 0.1); }
+.badge-cyan { background: rgba(255, 255, 255, 0.08); color: var(--text-main); border-color: rgba(255, 255, 255, 0.2); }
 
 /* ── Metrics Row ── */
 .metrics-row {
@@ -85,13 +83,13 @@ body, .gradio-container { background-color: var(--bg-app) !important; color: var
 .metric-card {
     background: var(--bg-card);
     border: 1px solid var(--border-light);
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 24px;
-    transition: transform 0.2s, border-color 0.2s;
+    transition: all 0.2s ease;
 }
 .metric-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--accent-teal);
+    background: var(--bg-card-hover);
+    border-color: #3f3f46;
 }
 .metric-value {
     font-size: 36px;
@@ -141,24 +139,24 @@ body, .gradio-container { background-color: var(--bg-app) !important; color: var
 .custom-table tr:last-child td { border-bottom: none; }
 .custom-table tr:hover { background: var(--bg-card-hover); }
 .custom-table .rank { font-weight: 700; color: var(--text-muted); width: 50px; }
-.custom-table .model-name { font-weight: 700; color: var(--accent-cyan); font-size: 15px; }
-.custom-table .score-main { font-weight: 800; color: #FFF; background: rgba(102, 252, 241, 0.1); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(102, 252, 241, 0.2); }
+.custom-table .model-name { font-weight: 600; color: var(--text-main); font-size: 15px; }
+.custom-table .score-main { font-weight: 700; color: #18181b; background: var(--text-main); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); }
 
 /* ── Gradio Tabs Overrides ── */
 .tabs { background: transparent !important; border: none !important; }
 .tab-nav { border-bottom: 1px solid var(--border-light) !important; background: transparent !important; margin-bottom: 24px !important; padding: 0 !important;}
 .tab-nav button { background: transparent !important; border: none !important; color: var(--text-muted) !important; font-weight: 600 !important; font-size: 15px !important; padding: 12px 24px !important; border-bottom: 2px solid transparent !important; border-radius: 0 !important;}
-.tab-nav button.selected { color: var(--text-main) !important; border-bottom-color: var(--accent-cyan) !important; }
+.tab-nav button.selected { color: var(--text-main) !important; border-bottom-color: var(--text-main) !important; }
 .tab-nav button:hover { color: var(--text-main) !important; }
 
 /* ── Plots & Container ── */
 .plot-container { background: var(--bg-card) !important; border: 1px solid var(--border-light) !important; border-radius: 16px !important; padding: 16px !important;}
 
 /* ── Dropdowns & Buttons ── */
-.wrap { background: var(--bg-card) !important; border: 1px solid var(--border-light) !important; border-radius: 12px !important; }
+.wrap { background: var(--bg-card) !important; border: 1px solid var(--border-light) !important; border-radius: 8px !important; }
 input, select, textarea { background: var(--bg-card) !important; color: var(--text-main) !important; border: none !important; font-size: 14px !important; }
-.primary { background: var(--accent-teal) !important; color: #000 !important; font-weight: 700 !important; border-radius: 12px !important; transition: all 0.2s !important; }
-.primary:hover { background: var(--accent-cyan) !important; transform: scale(1.02); }
+.primary { background: var(--text-main) !important; color: #000 !important; font-weight: 600 !important; border-radius: 8px !important; transition: all 0.2s !important; }
+.primary:hover { opacity: 0.9 !important; transform: scale(1.01); }
 
 /* ── Markdown ── */
 .prose { color: var(--text-muted) !important; font-size: 15px !important; line-height: 1.7 !important; }
@@ -177,8 +175,8 @@ input, select, textarea { background: var(--bg-card) !important; color: var(--te
 PL = dict(
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(family="Plus Jakarta Sans, sans-serif", color="#94A3B8", size=13),
-    legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(color="#F8FAFC", size=12), orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    font=dict(family="Plus Jakarta Sans, sans-serif", color="#a1a1aa", size=13),
+    legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(color="#fafafa", size=12), orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
     margin=dict(t=60, b=40, l=40, r=20)
 )
 
@@ -210,7 +208,7 @@ def generate_leaderboard_html(data):
 
 def ranking_chart(data):
     sd = sorted(data, key=lambda x: x["turkeval_score"], reverse=True)
-    colors = ["#66FCF1" if s["turkeval_score"] >= 80 else "#45A29E" if s["turkeval_score"] >= 65 else "#2C5B59" for s in sd]
+    colors = [PALETTE[0] if s["turkeval_score"] >= 80 else PALETTE[1] if s["turkeval_score"] >= 65 else PALETTE[3] for s in sd]
     
     fig = go.Figure(go.Bar(
         x=[d["turkeval_score"] for d in sd], 
@@ -219,16 +217,16 @@ def ranking_chart(data):
         marker=dict(color=colors, cornerradius=6),
         text=[f'{d["turkeval_score"]:.1f}' for d in sd], 
         textposition="outside",
-        textfont=dict(color="#F8FAFC", size=13, family="Plus Jakarta Sans"),
+        textfont=dict(color="#fafafa", size=13, family="Plus Jakarta Sans"),
         hovertemplate="<b>%{y}</b><br>Score: %{x:.1f}<extra></extra>"
     ))
     
     fig.update_layout(
         **PL, 
         height=400, 
-        title=dict(text="Score Distribution", font=dict(size=18, color="#F8FAFC", weight="bold"), x=0),
+        title=dict(text="Score Distribution", font=dict(size=18, color="#fafafa", weight="bold"), x=0),
         yaxis=dict(autorange="reversed", gridcolor="rgba(0,0,0,0)"),
-        xaxis=dict(range=[0, max(d["turkeval_score"] for d in sd) * 1.15], gridcolor="#1E293B")
+        xaxis=dict(range=[0, max(d["turkeval_score"] for d in sd) * 1.15], gridcolor="#27272a")
     )
     return fig
 
@@ -257,11 +255,11 @@ def radar_chart(data):
     fig.update_layout(
         **PL, 
         height=500, 
-        title=dict(text="Multidimensional Capability Profile (Top 4)", font=dict(size=18, color="#F8FAFC"), x=0),
+        title=dict(text="Multidimensional Capability Profile (Top 4)", font=dict(size=18, color="#fafafa", weight="bold"), x=0),
         polar=dict(
             bgcolor="rgba(0,0,0,0)",
-            radialaxis=dict(visible=True, range=[0, 100], gridcolor="#1E293B", linecolor="#1E293B", tickfont=dict(color="#94A3B8")),
-            angularaxis=dict(gridcolor="#1E293B", linecolor="#1E293B", tickfont=dict(color="#F8FAFC", size=13))
+            radialaxis=dict(visible=True, range=[0, 100], gridcolor="#27272a", linecolor="#27272a", tickfont=dict(color="#a1a1aa")),
+            angularaxis=dict(gridcolor="#27272a", linecolor="#27272a", tickfont=dict(color="#fafafa", size=13))
         )
     )
     return fig
@@ -275,13 +273,13 @@ def bar_chart(data):
     df = pd.DataFrame(rows)
     fig = px.bar(
         df, x="Model", y="Score", color="Benchmark", barmode="group",
-        color_discrete_sequence=["#66FCF1", "#45A29E", "#3B82F6", "#8B5CF6"], 
+        color_discrete_sequence=PALETTE[:4], 
         height=450
     )
     
     fig.update_layout(
         **PL, 
-        title=dict(text="Detailed Benchmark Breakdown", font=dict(size=18, color="#F8FAFC"), x=0),
+        title=dict(text="Detailed Benchmark Breakdown", font=dict(size=18, color="#fafafa", weight="bold"), x=0),
         xaxis_tickangle=-30, 
         bargap=0.2, 
         bargroupgap=0.1
@@ -294,10 +292,10 @@ def heatmap_chart(data):
     z = [[d.get(b, 0) for b in BENCHMARKS] for d in sd]
     
     colorscale = [
-        [0, "#0A0F16"], 
-        [0.4, "#1E293B"], 
-        [0.7, "#45A29E"], 
-        [1, "#66FCF1"]
+        [0, "#000000"], 
+        [0.4, "#09090b"], 
+        [0.7, "#27272a"], 
+        [1, "#fafafa"]
     ]
     
     fig = go.Figure(go.Heatmap(
@@ -315,7 +313,7 @@ def heatmap_chart(data):
     fig.update_layout(
         **PL, 
         height=400, 
-        title=dict(text="Density Matrix", font=dict(size=18, color="#F8FAFC"), x=0),
+        title=dict(text="Density Matrix", font=dict(size=18, color="#fafafa", weight="bold"), x=0),
         xaxis=dict(gridcolor="rgba(0,0,0,0)", tickfont=dict(size=13)),
         yaxis=dict(gridcolor="rgba(0,0,0,0)", tickfont=dict(size=13))
     )
@@ -330,14 +328,14 @@ def compare(m1, m2, data):
     v1, v2 = [d1.get(b, 0) for b in BENCHMARKS], [d2.get(b, 0) for b in BENCHMARKS]
     
     fig = go.Figure()
-    fig.add_trace(go.Bar(name=m1, x=list(BENCH_LABELS.values()), y=v1, marker_color="#66FCF1", marker_cornerradius=6))
-    fig.add_trace(go.Bar(name=m2, x=list(BENCH_LABELS.values()), y=v2, marker_color="#3B82F6", marker_cornerradius=6))
+    fig.add_trace(go.Bar(name=m1, x=list(BENCH_LABELS.values()), y=v1, marker_color=PALETTE[0], marker_cornerradius=4))
+    fig.add_trace(go.Bar(name=m2, x=list(BENCH_LABELS.values()), y=v2, marker_color=PALETTE[3], marker_cornerradius=4))
     
     fig.update_layout(
         **PL, 
         barmode="group", 
         height=450,
-        title=dict(text=f"Head-to-Head: {m1} vs {m2}", font=dict(size=18, color="#F8FAFC"), x=0),
+        title=dict(text=f"Head-to-Head: {m1} vs {m2}", font=dict(size=18, color="#fafafa", weight="bold"), x=0),
         bargroupgap=0.1
     )
     
